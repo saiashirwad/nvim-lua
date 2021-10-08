@@ -123,7 +123,7 @@ vim.g.neon_style = "doom" vim.g.neon_italic_keyword = true
 vim.g.neon_italic_function = true
 vim.g.neon_transparent = true
 
-g.neoterm_default_mod = 'botright'
+g.neoterm_default_mod = 'vertical'
 g.neoterm_autoinsert = true
 g.neoterm_autoscroll = true
 g.neoterm_term_per_tab = true
@@ -449,6 +449,7 @@ vim.opt.listchars:append("eol:↴")
 require("indent_blankline").setup {
     show_end_of_line = true,
     space_char_blankline = " ",
+    buftype_exclude = {"terminal"}
 }
 
 
