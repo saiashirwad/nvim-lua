@@ -18,6 +18,8 @@ require('packer').startup(function(use)
       }
     end
   }
+  use 'RRethy/nvim-base16'
+  use 'gruvbox-community/gruvbox'
   use 'jiangmiao/auto-pairs'
 	use 'Iron-E/nvim-highlite'
 	use 'szw/vim-maximizer'
@@ -122,26 +124,9 @@ if has('nvim')
    au! TermOpen * tnoremap <buffer> <Esc> <c-\><c-n>
 endif]])
 
-require('lualine').setup({
-  options = {
-    theme = "vscode",
-    component_separators = {'', ''},
-    section_separators = {'', ''},
-  },
-  sections = {
-    lualine_a = {{'filename', path = 2}},
-    lualine_b = {'branch', {
-      'diff',
-      color_added = 'green',
-      color_modified = 'yellow',
-      color_removed = 'red'
-    }},
-    lualine_c = {},
-    lualine_x = {},
-    lualine_y = {},
-    lualine_z = {}
-  },
-})
+
+
+require('lualine').setup({})
 
 -- sbdchd/neoformat
 map('n', '<leader>F', ':Neoformat prettier<CR>')
@@ -168,6 +153,7 @@ _G.telescope_files_or_git_files = function()
  end
 end
 map('n', '<leader>fD', ':lua telescope_live_grep_in_path()<CR>')
+map('n', '<leader>fc', ':Telescope colorscheme<CR>')
 map('n', '<leader><space>', ':lua telescope_files_or_git_files()<CR>')
 map('n', '<leader>fd', ':lua telescope_find_files_in_path()<CR>')
 map('n', '<leader>ft', ':lua telescope_find_files_in_path("./tests")<CR>')
@@ -250,7 +236,7 @@ end
  
 -- nvim/treesitter
 g.vscode_style = "dark"
-cmd('colorscheme vscode')
+cmd('colorscheme gruvbox')
 cmd('set foldmethod=expr')
 cmd('set foldexpr=nvim_treesitter#foldexpr()')
 
@@ -308,6 +294,8 @@ map('n', '<leader>gM', ':DiffviewOpen main<cr>')
 map('n', '<leader>gl', ':Git log<cr>')
 map('n', '<leader>gp', ':Git push<cr>')
 
+
+map('n', '<leader>eo',':NvimTreeToggle<CR>')
 
 -- hrsh7th/nvim-cmp
 local cmp = require('cmp')
