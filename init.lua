@@ -453,3 +453,5 @@ require("indent_blankline").setup {
 }
 
 vim.cmd[[colorscheme moonlight]]
+
+vim.api.nvim_set_keymap('v', 'f', '<Plug>SnipRun', {silent = true})
