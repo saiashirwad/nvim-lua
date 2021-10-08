@@ -7,7 +7,16 @@ g.mapleader = " "
 
 vim.cmd [[packadd packer.nvim]]
 require('packer').startup(function(use)
+  use 'xiyaowonwg/nvim-transparent' 
+  use { 'junegunn/fzf', run = './install --bin', }
+  use { 'junegunn/fzf.vim' }
 	use 'wbthomason/packer.nvim'
+	use 'tpope/vim-surround'
+  use { 'ibhagwan/fzf-lua',
+    requires = {
+      'vijaymarupudi/nvim-fzf',
+      'kyazdani42/nvim-web-devicons' } -- optional for icons
+  }
   use {
     "folke/twilight.nvim",
     config = function()
@@ -158,15 +167,15 @@ map('n', '<leader><space>', ':lua telescope_files_or_git_files()<CR>')
 map('n', '<leader>fd', ':lua telescope_find_files_in_path()<CR>')
 map('n', '<leader>ft', ':lua telescope_find_files_in_path("./tests")<CR>')
 map('n', '<leader>fT', ':lua telescope_live_grep_in_path("./tests")<CR>')
-map('n', '<leader>ff', ':Telescope live_grep<CR>')
 map('n', '<leader>fo', ':Telescope file_browser<CR>')
 map('n', '<leader>fn', ':Telescope find_files<CR>')
 map('n', '<leader>fg', ':Telescope git_branches<CR>')
 map('n', '<leader>fb', ':Telescope buffers<CR>')
 map('n', '<leader>fs', ':Telescope lsp_document_symbols<CR>')
-map('n', '<leader>ff', ':Telescope live_grep<CR>')
 map('n', '<leader>FF', ':Telescope grep_string<CR>')
 
+map('n', '<leader>ff', ':Files<CR>')
+map('n', '<leader>rr', ':Rg<CR>')
 
 -- Lsp
 local nvim_lsp = require'lspconfig'
@@ -237,8 +246,8 @@ end
 -- nvim/treesitter
 g.vscode_style = "dark"
 cmd('colorscheme gruvbox')
-cmd('set foldmethod=expr')
-cmd('set foldexpr=nvim_treesitter#foldexpr()')
+--cmd('set foldmethod=expr')
+--cmd('set foldexpr=nvim_treesitter#foldexpr()')
 
 map('n', '<leader>nn', ':tabe ~/tmp/notes.md<CR>')
 
@@ -384,3 +393,17 @@ require'nvim-tree'.setup {
 }
 
 
+require("transparent").setup({
+  enable = false, -- boolean: enable transparent
+  extra_groups = { -- table/string: additional groups that should be clear
+    -- In particular, when you set it to 'all', that means all avaliable groups
+    -- example of akinsho/nvim-bufferline.lua
+    "BufferLineTabClose",
+    "BufferlineBufferSelected",
+    "BufferLineFill",
+    "BufferLineBackground",
+    "BufferLineSeparator",
+    "BufferLineIndicatorSelected",
+  },
+  exclude = {}, -- table: groups you don't want to clear
+})
