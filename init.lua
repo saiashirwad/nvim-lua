@@ -7,7 +7,11 @@ g.mapleader = " "
 
 vim.cmd [[packadd packer.nvim]]
 require('packer').startup(function(use)
-  use 'xiyaowonwg/nvim-transparent' 
+  use 'shaunsingh/moonlight.nvim'
+  use 'folke/tokyonight.nvim'
+  use 'shaunsingh/nord.nvim'
+  use { 'michaelb/sniprun', run = 'bash ./install.sh'}
+  use "lukas-reineke/indent-blankline.nvim"
   use { 'junegunn/fzf', run = './install --bin', }
   use { 'junegunn/fzf.vim' }
 	use 'wbthomason/packer.nvim'
@@ -135,7 +139,9 @@ endif]])
 
 
 
-require('lualine').setup({})
+require('lualine').setup({
+  options = {theme = 'moonlight'}
+})
 
 -- sbdchd/neoformat
 map('n', '<leader>F', ':Neoformat prettier<CR>')
@@ -245,7 +251,8 @@ end
  
 -- nvim/treesitter
 g.vscode_style = "dark"
-cmd('colorscheme gruvbox')
+vim.g.tokyonight_style = "night"
+cmd('colorscheme tokyonight')
 --cmd('set foldmethod=expr')
 --cmd('set foldexpr=nvim_treesitter#foldexpr()')
 
@@ -392,18 +399,66 @@ require'nvim-tree'.setup {
   }
 }
 
+require'sniprun'.setup({
+  selected_interpreters = {},     --# use those instead of the default for the current filetype
+  repl_enable = {},               --# enable REPL-like behavior for the given interpreters
+  repl_disable = {},              --# disable REPL-like behavior for the given interpreters
 
-require("transparent").setup({
-  enable = false, -- boolean: enable transparent
-  extra_groups = { -- table/string: additional groups that should be clear
-    -- In particular, when you set it to 'all', that means all avaliable groups
-    -- example of akinsho/nvim-bufferline.lua
-    "BufferLineTabClose",
-    "BufferlineBufferSelected",
-    "BufferLineFill",
-    "BufferLineBackground",
-    "BufferLineSeparator",
-    "BufferLineIndicatorSelected",
+  interpreter_options = {},       --# intepreter-specific options, consult docs / :SnipInfo <name>
+
+  --# you can combo different display modes as desired
+  display = {
+    "Classic",                    --# display results in the command-line  area
+    "VirtualTextOk",              --# display ok results as virtual text (multiline is shortened)
+
+    -- "VirtualTextErr",          --# display error results as virtual text
+    -- "TempFloatingWindow",      --# display results in a floating window
+    -- "LongTempFloatingWindow",  --# same as above, but only long results. To use with VirtualText__
+    -- "Terminal",                --# display results in a vertical split
+    -- "NvimNotify",              --# display with the nvim-notify plugin
+    -- "Api"                      --# return output to a programming interface
   },
-  exclude = {}, -- table: groups you don't want to clear
+
+  --# You can use the same keys to customize whether a sniprun producing
+  --# no output should display nothing or '(no output)'
+  show_no_output = {
+    "Classic",
+    "TempFloatingWindow",      --# implies LongTempFloatingWindow, which has no effect on its own
+  },
+
+  --# customize highlight groups (setting this overrides colorscheme)
+  snipruncolors = {
+    SniprunVirtualTextOk   =  {bg="#FFFFFF",fg="#000000",ctermbg="Cyan",cterfg="Black"},
+    SniprunFloatingWinOk   =  {fg="#FFFFFF",ctermfg="Cyan"},
+    SniprunVirtualTextErr  =  {bg="#FFFFFF",fg="#000000",ctermbg="DarkRed",cterfg="Black"},
+    SniprunFloatingWinErr  =  {fg="#FFFFFF",ctermfg="DarkRed"},
+  },
+
+  --# miscellaneous compatibility/adjustement settings
+  inline_messages = 0,             --# inline_message (0/1) is a one-line way to display messages
+				   --# to workaround sniprun not being able to display anything
+
+  borders = 'single'               --# display borders around floating windows
+                                   --# possible values are 'none', 'single', 'double', or 'shadow'
 })
+
+vim.opt.list = true
+vim.opt.listchars:append("space:⋅")
+vim.opt.listchars:append("eol:↴")
+
+require("indent_blankline").setup {
+    show_end_of_line = true,
+    space_char_blankline = " ",
+}
+
+
+-- Example config in Lua
+vim.g.tokyonight_style = "night"
+vim.g.tokyonight_italic_functions = true
+vim.g.tokyonight_sidebars = { "qf", "vista_kind", "terminal", "packer" }
+
+-- Change the "hint" color to the "orange" color, and make the "error" color bright red
+vim.g.tokyonight_colors = { hint = "orange", error = "#ff0000" }
+
+-- Load the colorscheme
+vim.cmd[[colorscheme moonlight]]
