@@ -8,8 +8,7 @@ g.mapleader = " "
 vim.cmd [[packadd packer.nvim]]
 require('packer').startup(function(use)
   use 'shaunsingh/moonlight.nvim'
-  use 'folke/tokyonight.nvim'
-  use 'shaunsingh/nord.nvim'
+  use 'sainnhe/everforest'
   use { 'michaelb/sniprun', run = 'bash ./install.sh'}
   use "lukas-reineke/indent-blankline.nvim"
   use { 'junegunn/fzf', run = './install --bin', }
@@ -19,20 +18,15 @@ require('packer').startup(function(use)
   use { 'ibhagwan/fzf-lua',
     requires = {
       'vijaymarupudi/nvim-fzf',
-      'kyazdani42/nvim-web-devicons' } -- optional for icons
+      'kyazdani42/nvim-web-devicons' } 
   }
   use {
     "folke/twilight.nvim",
     config = function()
       require("twilight").setup {
-        -- your configuration comes here
-        -- or leave it empty to use the default settings
-        -- refer to the configuration section below
       }
     end
   }
-  use 'RRethy/nvim-base16'
-  use 'gruvbox-community/gruvbox'
   use 'jiangmiao/auto-pairs'
 	use 'Iron-E/nvim-highlite'
 	use 'szw/vim-maximizer'
@@ -61,25 +55,27 @@ require('packer').startup(function(use)
 	use 'nvim-telescope/telescope-dap.nvim'
 	use 'theHamsta/nvim-dap-virtual-text'
 	use 'Mofiqul/vscode.nvim'
-	use 'hoob3rt/lualine.nvim'
+	--use 'hoob3rt/lualine.nvim'
 	use 'kyazdani42/nvim-web-devicons'
 	use 'ryanoasis/vim-devicons'
 	use 'TimUntersberger/neogit'
 	use 'projekt0n/github-nvim-theme'
-	use 'David-Kunz/jester'
 	use 'vhyrro/neorg'
 	use 'folke/zen-mode.nvim'
 	use 'nvim-treesitter/playground'
 	use 'David-Kunz/treesitter-unit'
-	-- use 'ahmedkhalf/project.nvim'
-	-- use 'tamago324/lir.nvim'
-	-- use 'kdheepak/lazygit.nvim'
 	use 'Pocco81/TrueZen.nvim'
 	use 'tpope/vim-fugitive'
 	use 'p00f/nvim-ts-rainbow'
 	use 'sindrets/diffview.nvim'
 end)
 
+
+opt.splitbelow = true
+opt.splitright = true
+opt.swapfile = false
+opt.termguicolors = true
+opt.background = 'dark'
 opt.completeopt = {'menu', 'menuone', 'noselect'}
 opt.clipboard = 'unnamedplus'
 opt.mouse = 'a'
@@ -95,10 +91,8 @@ opt.relativenumber = true
 opt.ignorecase = true
 opt.smartcase = true
 opt.incsearch = true
--- set diffopt+=vertical " starts diff mode in vertical split
 opt.hidden = true
 opt.cmdheight = 1
--- set shortmess+=c " don't need to press enter so often
 opt.signcolumn = 'yes'
 opt.updatetime = 520
 opt.undofile = true
@@ -119,10 +113,6 @@ map('n', '<leader>v', ':e $MYVIMRC<CR>')
 
 require('gitsigns').setup({})
 
-vim.g.neon_style = "doom" vim.g.neon_italic_keyword = true
-vim.g.neon_italic_function = true
-vim.g.neon_transparent = true
-
 g.neoterm_default_mod = 'vertical'
 g.neoterm_autoinsert = true
 g.neoterm_autoscroll = true
@@ -138,15 +128,12 @@ if has('nvim')
 endif]])
 
 
-
-require('lualine').setup({
-  options = {theme = 'moonlight'}
-})
-
 -- sbdchd/neoformat
 map('n', '<leader>F', ':Neoformat prettier<CR>')
 
+-- Maximizer
 map('', '<C-w>m', ':MaximizerToggle!<CR>')
+
 
 -- nvim-telescope/telescope.nvim
 _G.telescope_find_files_in_path = function(path)
@@ -167,6 +154,8 @@ _G.telescope_files_or_git_files = function()
    builtin.find_files()
  end
 end
+
+
 map('n', '<leader>fD', ':lua telescope_live_grep_in_path()<CR>')
 map('n', '<leader>fc', ':Telescope colorscheme<CR>')
 map('n', '<leader><space>', ':lua telescope_files_or_git_files()<CR>')
@@ -180,7 +169,8 @@ map('n', '<leader>fb', ':Telescope buffers<CR>')
 map('n', '<leader>fs', ':Telescope lsp_document_symbols<CR>')
 map('n', '<leader>FF', ':Telescope grep_string<CR>')
 
-map('n', '<leader>ff', ':Files<CR>')
+--map('n', '<leader>ff', ':Files<CR>')
+map('n', '<leader>ff', ':Telescope find_files<CR>')
 map('n', '<leader>rr', ':Rg<CR>')
 
 -- Lsp
@@ -223,38 +213,8 @@ for _, lsp in ipairs(servers) do
   }
 end
 
--- -- neovim/nvim-lspconfig
--- local nvim_lsp = require'lspconfig'
--- local on_attach = function(client, bufnr)
---     local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
---     buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
--- end
--- local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities(), {
---   snippetSupport = false,
--- })
--- nvim_lsp.tsserver.setup{ capabilities = capabilities }
--- local servers = { 'tsserver' }
--- for _, lsp in ipairs(servers) do
---   nvim_lsp[lsp].setup {
---     on_attach = on_attach
---   }
--- end
-
--- map('n', 'gd', ':lua vim.lsp.buf.definition()<CR>')
--- map('n', 'gh', ':lua vim.lsp.buf.hover()<CR>')
--- map('n', 'ga', ':Telescope lsp_code_actions<CR>')
--- map('n', 'gA', ':Telescope lsp_range_code_actions<CR>')
--- map('n', 'gD', ':lua vim.lsp.buf.implementation()<CR>')
--- map('n', 'K', ':lua vim.lsp.buf.signature_help()<CR>')
--- map('n', 'gr', ':lua vim.lsp.buf.references()<CR>')
--- map('n', 'gR', ':lua vim.lsp.buf.rename()<CR>')
- 
--- nvim/treesitter
-g.vscode_style = "dark"
-vim.g.tokyonight_style = "night"
-cmd('colorscheme tokyonight')
---cmd('set foldmethod=expr')
---cmd('set foldexpr=nvim_treesitter#foldexpr()')
+cmd('set foldmethod=expr')
+cmd('set foldexpr=nvim_treesitter#foldexpr()')
 
 map('n', '<leader>nn', ':tabe ~/tmp/notes.md<CR>')
 
@@ -281,7 +241,6 @@ require'nvim-treesitter.configs'.setup {
   }
 }
 
--- -- TimUntersberger/neogit and sindrets/diffview.nvim
 require'diffview'.setup {
   file_panel = {
     position = "left",            -- One of 'left', 'right', 'top', 'bottom'
@@ -295,6 +254,7 @@ require("neogit").setup {
     diffview = true
     }
   }
+
 map('n', '<leader>gg', ':Neogit<cr>')
 map('n', '<leader>gd', ':DiffviewOpen<cr>')
 map('n', '<leader>gD', ':DiffviewOpen main<cr>')
@@ -309,8 +269,6 @@ map('n', '<leader>gm', ':tabe %<cr>:Gvdiffsplit! main<CR>')
 map('n', '<leader>gM', ':DiffviewOpen main<cr>')
 map('n', '<leader>gl', ':Git log<cr>')
 map('n', '<leader>gp', ':Git push<cr>')
-
-
 map('n', '<leader>eo',':NvimTreeToggle<CR>')
 
 -- hrsh7th/nvim-cmp
@@ -334,66 +292,37 @@ local cmp = require('cmp')
 local au = require('au')
 
 
--- following options are the default
 require'nvim-tree'.setup {
-  -- disables netrw completely
   disable_netrw       = true,
-  -- hijack netrw window on startup
   hijack_netrw        = true,
-  -- open the tree when running this setup function
   open_on_setup       = false,
-  -- will not open on setup if the filetype is in this list
   ignore_ft_on_setup  = {},
-  -- closes neovim automatically when the tree is the last **WINDOW** in the view
   auto_close          = false,
-  -- opens the tree when changing/opening a new tab if the tree wasn't previously opened
   open_on_tab         = false,
-  -- hijacks new directory buffers when they are opened.
   update_to_buf_dir   = {
-    -- enable the feature
     enable = true,
-    -- allow to open the tree if it was previously closed
     auto_open = true,
   },
-  -- hijack the cursor in the tree to put it at the start of the filename
   hijack_cursor       = false,
-  -- updates the root directory of the tree on `DirChanged` (when your run `:cd` usually)
   update_cwd          = false,
-  -- show lsp diagnostics in the signcolumn
   lsp_diagnostics     = false,
-  -- update the focused file on `BufEnter`, un-collapses the folders recursively until it finds the file
   update_focused_file = {
-    -- enables the feature
     enable      = false,
-    -- update the root directory of the tree to the one of the folder containing the file if the file is not under the current root directory
-    -- only relevant when `update_focused_file.enable` is true
     update_cwd  = false,
-    -- list of buffer names / filetypes that will not update the cwd if the file isn't found under the current root directory
-    -- only relevant when `update_focused_file.update_cwd` is true and `update_focused_file.enable` is true
     ignore_list = {}
   },
-  -- configuration options for the system open command (`s` in the tree by default)
   system_open = {
-    -- the command to run this, leaving nil should work in most cases
     cmd  = nil,
-    -- the command arguments as a list
     args = {}
   },
 
   view = {
-    -- width of the window, can be either a number (columns) or a string in `%`, for left or right side placement
     width = 30,
-    -- height of the window, can be either a number (columns) or a string in `%`, for top or bottom side placement
     height = 30,
-    -- side of the tree, can be one of 'left' | 'right' | 'top' | 'bottom'
     side = 'left',
-    -- if true the tree will resize itself after opening a file
     auto_resize = false,
     mappings = {
-      -- custom only false will merge the list with the default mappings
-      -- if true, it will only use your list to set the mappings
       custom_only = false,
-      -- list of mappings to set on the tree manually
       list = {}
     }
   }
@@ -410,36 +339,13 @@ require'sniprun'.setup({
   display = {
     "Classic",                    --# display results in the command-line  area
     "VirtualTextOk",              --# display ok results as virtual text (multiline is shortened)
-
-    -- "VirtualTextErr",          --# display error results as virtual text
-    -- "TempFloatingWindow",      --# display results in a floating window
-    -- "LongTempFloatingWindow",  --# same as above, but only long results. To use with VirtualText__
-    -- "Terminal",                --# display results in a vertical split
-    -- "NvimNotify",              --# display with the nvim-notify plugin
-    -- "Api"                      --# return output to a programming interface
   },
-
-  --# You can use the same keys to customize whether a sniprun producing
-  --# no output should display nothing or '(no output)'
   show_no_output = {
     "Classic",
     "TempFloatingWindow",      --# implies LongTempFloatingWindow, which has no effect on its own
   },
-
-  --# customize highlight groups (setting this overrides colorscheme)
-  snipruncolors = {
-    SniprunVirtualTextOk   =  {bg="#FFFFFF",fg="#000000",ctermbg="Cyan",cterfg="Black"},
-    SniprunFloatingWinOk   =  {fg="#FFFFFF",ctermfg="Cyan"},
-    SniprunVirtualTextErr  =  {bg="#FFFFFF",fg="#000000",ctermbg="DarkRed",cterfg="Black"},
-    SniprunFloatingWinErr  =  {fg="#FFFFFF",ctermfg="DarkRed"},
-  },
-
-  --# miscellaneous compatibility/adjustement settings
   inline_messages = 0,             --# inline_message (0/1) is a one-line way to display messages
-				   --# to workaround sniprun not being able to display anything
-
   borders = 'single'               --# display borders around floating windows
-                                   --# possible values are 'none', 'single', 'double', or 'shadow'
 })
 
 vim.opt.list = true
@@ -448,10 +354,45 @@ vim.opt.listchars:append("eol:↴")
 
 require("indent_blankline").setup {
     show_end_of_line = true,
-    space_char_blankline = " ",
+    space_char_blankline = ".",
     buftype_exclude = {"terminal"}
 }
 
-vim.cmd[[colorscheme moonlight]]
+vim.cmd[[colorscheme everforest]]
 
 vim.api.nvim_set_keymap('v', 'f', '<Plug>SnipRun', {silent = true})
+
+--Everforest
+g.everforest_background = 'dark'
+g.everforest_enable_italic = 1
+g.everforest_disable_italic_comment = 0
+g.everforest_transparent_background = 1
+
+
+--From old init.vim
+map('n', '<leader>h', ':wincmd h<CR>')
+map('n', '<leader>j', ':wincmd j<CR>')
+map('n', '<leader>k', ':wincmd k<CR>')
+map('n', '<leader>l', ':wincmd l<CR>')
+map('i', 'kj', '<Esc>')
+
+map('i', ',', ',<c-g>u')
+map('i', '.', '.<c-g>u')
+map('i', '!', '!<c-g>u')
+map('i', '?', '?<c-g>u')
+
+map('n', 'n', 'nzzzv')
+map('n', 'N', 'Nzzzv')
+map('n', 'J', 'mzJ`z')
+
+map('n', 'Y', 'y$')
+map('n', '<leader>to', ':Rg TODO:<CR>')
+
+vim.cmd[[
+let $FZF_DEFAULT_COMMAND = 'rg --files --ignore-case --hidden -g "!{.git,node_modules,vendor,build}/*"'
+command! -bang -nargs=? -complete=dir Files
+     \ call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
+
+let $FZF_DEFAULT_OPTS="--ansi --preview-window 'right:60%' --layout reverse --margin=1,4 --preview 'bat --color=always --style=header,grid --line-range :300 {}'"
+
+]]
