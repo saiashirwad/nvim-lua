@@ -7,6 +7,7 @@ g.mapleader = " "
 
 vim.cmd [[packadd packer.nvim]]
 require('packer').startup(function(use)
+  use 'nvim-telescope/telescope-fzy-native.nvim'
   use {
     'hoob3rt/lualine.nvim',
     requires = {'kyazdani42/nvim-web-devicons', opt = true}
@@ -84,7 +85,7 @@ opt.splitbelow = true
 opt.splitright = true
 opt.swapfile = false
 opt.termguicolors = true
-opt.background = 'dark'
+--opt.background = 'dark'
 opt.ignorecase = true
 --opt.completeopt = {'menu', 'menuone', 'noselect'}
 opt.completeopt = { 'menuone', 'noinsert', 'noselect' }
@@ -168,6 +169,15 @@ _G.telescope_files_or_git_files = function()
  end
 end
 
+require('telescope').setup {
+    extensions = {
+        fzy_native = {
+            override_generic_sorter = false,
+            override_file_sorter = true,
+        }
+    }
+}
+require('telescope').load_extension('fzy_native')
 
 map('n', '<leader>fD', ':lua telescope_live_grep_in_path()<CR>')
 map('n', '<leader>fc', ':Telescope colorscheme<CR>')
@@ -184,7 +194,7 @@ map('n', '<leader>FF', ':Telescope grep_string<CR>')
 
 --map('n', '<leader>ff', ':Files<CR>')
 map('n', '<leader>ff', ':Telescope find_files<CR>')
-map('n', '<leader>rr', ':Rg<CR>')
+map('n', '<leader>rr', ':Telescope live_grep_fzf<CR>')
 
 -- Lsp
 local nvim_lsp = require'lspconfig'
@@ -206,11 +216,11 @@ local on_attach = function(client, bufnr)
   buf_set_keymap('n', '<space>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
   buf_set_keymap('n', '<space>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
   buf_set_keymap('n', '<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
-  buf_set_keymap('n', '<space>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
+  buf_set_keymap('n', '<space>do', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
   buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
   buf_set_keymap('n', '<space>e', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', opts)
-  buf_set_keymap('n', '[d', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
-  buf_set_keymap('n', ']d', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
+  buf_set_keymap('n', '[g', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
+  buf_set_keymap('n', ']g', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
   buf_set_keymap('n', '<space>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
   buf_set_keymap('n', '<space>f', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
 
@@ -225,6 +235,28 @@ for _, lsp in ipairs(servers) do
     }
   }
 end
+
+local function organize_imports()
+  local params = {
+    command = "_typescript.organizeImports",
+    arguments = {vim.api.nvim_buf_get_name(0)},
+    title = ""
+  }
+  vim.lsp.buf.execute_command(params)
+end
+
+nvim_lsp.tsserver.setup {
+  on_attach = on_attach,
+  --capabilities = capabilities,
+  commands = {
+    OrganizeImports = {
+      organize_imports,
+      description = "Organize Imports"
+    }
+  }
+}
+
+
 
 cmd('set foldmethod=expr')
 cmd('set foldexpr=nvim_treesitter#foldexpr()')
@@ -303,8 +335,6 @@ local cmp = require('cmp')
     },
   }
 
---local au = require('au')
-
 require'nvim-tree'.setup {
   disable_netrw       = true,
   hijack_netrw        = true,
@@ -328,7 +358,6 @@ require'nvim-tree'.setup {
     cmd  = nil,
     args = {}
   },
-
   view = {
     width = 30,
     height = 30,
@@ -347,8 +376,6 @@ require'sniprun'.setup({
   repl_disable = {},              --# disable REPL-like behavior for the given interpreters
 
   interpreter_options = {},       --# intepreter-specific options, consult docs / :SnipInfo <name>
-
-  --# you can combo different display modes as desired
   display = {
     "Classic",                    --# display results in the command-line  area
     "VirtualTextOk",              --# display ok results as virtual text (multiline is shortened)
@@ -374,12 +401,6 @@ require("indent_blankline").setup {
 vim.cmd[[colorscheme everforest]]
 
 vim.api.nvim_set_keymap('v', 'f', '<Plug>SnipRun', {silent = true})
-
---Everforest
---g.everforest_enable_italic = 1
---g.everforest_disable_italic_comment = 0
---g.everforest_transparent_background = 0
-
 
 --From old init.vim
 map('n', '<leader>h', ':wincmd h<CR>')
@@ -421,20 +442,15 @@ let $FZF_DEFAULT_OPTS="--ansi --preview-window 'right:60%' --layout reverse --ma
    settings = {
      Lua = {
        runtime = {
-         -- Tell the language server which version of Lua you're using (most likely LuaJIT in the case of Neovim)
          version = 'LuaJIT',
-         -- Setup your lua path
          path = runtime_path,
        },
        diagnostics = {
-         -- Get the language server to recognize the `vim` global
          globals = {'vim'},
        },
        workspace = {
-         -- Make the server aware of Neovim runtime files
          library = vim.api.nvim_get_runtime_file("", true),
        },
-       -- Do not send telemetry data containing a randomized but unique identifier
        telemetry = {
          enable = false,
        },
@@ -445,6 +461,7 @@ let $FZF_DEFAULT_OPTS="--ansi --preview-window 'right:60%' --layout reverse --ma
  require('lualine').setup({
    options = { 
      icons_enabled = true,
-     theme = 'seoul256'
+     theme = 'everforest'
    }
  })
+ vim.cmd[[set background=dark]]

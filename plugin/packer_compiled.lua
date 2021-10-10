@@ -93,6 +93,22 @@ _G.packer_plugins = {
     loaded = true,
     path = "/home/sai/.local/share/nvim/site/pack/packer/start/diffview.nvim"
   },
+  everforest = {
+    loaded = true,
+    path = "/home/sai/.local/share/nvim/site/pack/packer/start/everforest"
+  },
+  fzf = {
+    loaded = true,
+    path = "/home/sai/.local/share/nvim/site/pack/packer/start/fzf"
+  },
+  ["fzf-lua"] = {
+    loaded = true,
+    path = "/home/sai/.local/share/nvim/site/pack/packer/start/fzf-lua"
+  },
+  ["fzf.vim"] = {
+    loaded = true,
+    path = "/home/sai/.local/share/nvim/site/pack/packer/start/fzf.vim"
+  },
   ["github-nvim-theme"] = {
     loaded = true,
     path = "/home/sai/.local/share/nvim/site/pack/packer/start/github-nvim-theme"
@@ -101,13 +117,21 @@ _G.packer_plugins = {
     loaded = true,
     path = "/home/sai/.local/share/nvim/site/pack/packer/start/gitsigns.nvim"
   },
-  jester = {
+  ["indent-blankline.nvim"] = {
     loaded = true,
-    path = "/home/sai/.local/share/nvim/site/pack/packer/start/jester"
+    path = "/home/sai/.local/share/nvim/site/pack/packer/start/indent-blankline.nvim"
+  },
+  ["lightspeed.nvim"] = {
+    loaded = true,
+    path = "/home/sai/.local/share/nvim/site/pack/packer/start/lightspeed.nvim"
   },
   ["lualine.nvim"] = {
     loaded = true,
     path = "/home/sai/.local/share/nvim/site/pack/packer/start/lualine.nvim"
+  },
+  ["moonlight.nvim"] = {
+    loaded = true,
+    path = "/home/sai/.local/share/nvim/site/pack/packer/start/moonlight.nvim"
   },
   neoformat = {
     loaded = true,
@@ -137,6 +161,10 @@ _G.packer_plugins = {
     loaded = true,
     path = "/home/sai/.local/share/nvim/site/pack/packer/start/nim.nvim"
   },
+  ["nlua.nvim"] = {
+    loaded = true,
+    path = "/home/sai/.local/share/nvim/site/pack/packer/start/nlua.nvim"
+  },
   ["nvim-cmp"] = {
     loaded = true,
     path = "/home/sai/.local/share/nvim/site/pack/packer/start/nvim-cmp"
@@ -149,6 +177,10 @@ _G.packer_plugins = {
     loaded = true,
     path = "/home/sai/.local/share/nvim/site/pack/packer/start/nvim-dap-virtual-text"
   },
+  ["nvim-fzf"] = {
+    loaded = true,
+    path = "/home/sai/.local/share/nvim/site/pack/packer/start/nvim-fzf"
+  },
   ["nvim-highlite"] = {
     loaded = true,
     path = "/home/sai/.local/share/nvim/site/pack/packer/start/nvim-highlite"
@@ -158,6 +190,7 @@ _G.packer_plugins = {
     path = "/home/sai/.local/share/nvim/site/pack/packer/start/nvim-lspconfig"
   },
   ["nvim-tree.lua"] = {
+    config = { "\27LJ\2\n;\0\0\3\0\3\0\a6\0\0\0'\2\1\0B\0\2\0029\0\2\0004\2\0\0B\0\2\1K\0\1\0\nsetup\14nvim-tree\frequire\0" },
     loaded = true,
     path = "/home/sai/.local/share/nvim/site/pack/packer/start/nvim-tree.lua"
   },
@@ -189,6 +222,10 @@ _G.packer_plugins = {
     loaded = true,
     path = "/home/sai/.local/share/nvim/site/pack/packer/start/popup.nvim"
   },
+  sniprun = {
+    loaded = true,
+    path = "/home/sai/.local/share/nvim/site/pack/packer/start/sniprun"
+  },
   ["telescope-dap.nvim"] = {
     loaded = true,
     path = "/home/sai/.local/share/nvim/site/pack/packer/start/telescope-dap.nvim"
@@ -206,10 +243,6 @@ _G.packer_plugins = {
     loaded = true,
     path = "/home/sai/.local/share/nvim/site/pack/packer/start/twilight.nvim"
   },
-  ["vim-commentary"] = {
-    loaded = true,
-    path = "/home/sai/.local/share/nvim/site/pack/packer/start/vim-commentary"
-  },
   ["vim-devicons"] = {
     loaded = true,
     path = "/home/sai/.local/share/nvim/site/pack/packer/start/vim-devicons"
@@ -221,6 +254,10 @@ _G.packer_plugins = {
   ["vim-maximizer"] = {
     loaded = true,
     path = "/home/sai/.local/share/nvim/site/pack/packer/start/vim-maximizer"
+  },
+  ["vim-surround"] = {
+    loaded = true,
+    path = "/home/sai/.local/share/nvim/site/pack/packer/start/vim-surround"
   },
   vimwiki = {
     loaded = true,
@@ -237,6 +274,10 @@ _G.packer_plugins = {
 }
 
 time([[Defining packer_plugins]], false)
+-- Config for: nvim-tree.lua
+time([[Config for nvim-tree.lua]], true)
+try_loadstring("\27LJ\2\n;\0\0\3\0\3\0\a6\0\0\0'\2\1\0B\0\2\0029\0\2\0004\2\0\0B\0\2\1K\0\1\0\nsetup\14nvim-tree\frequire\0", "config", "nvim-tree.lua")
+time([[Config for nvim-tree.lua]], false)
 -- Config for: twilight.nvim
 time([[Config for twilight.nvim]], true)
 try_loadstring("\27LJ\2\n:\0\0\3\0\3\0\a6\0\0\0'\2\1\0B\0\2\0029\0\2\0004\2\0\0B\0\2\1K\0\1\0\nsetup\rtwilight\frequire\0", "config", "twilight.nvim")
