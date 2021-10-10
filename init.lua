@@ -7,6 +7,12 @@ g.mapleader = " "
 
 vim.cmd [[packadd packer.nvim]]
 require('packer').startup(function(use)
+  use {
+    'hoob3rt/lualine.nvim',
+    requires = {'kyazdani42/nvim-web-devicons', opt = true}
+  }
+  use 'ggandor/lightspeed.nvim'
+  use 'tjdevries/nlua.nvim'
   use 'shaunsingh/moonlight.nvim'
   use 'sainnhe/everforest'
   use { 'michaelb/sniprun', run = 'bash ./install.sh'}
@@ -18,7 +24,7 @@ require('packer').startup(function(use)
   use { 'ibhagwan/fzf-lua',
     requires = {
       'vijaymarupudi/nvim-fzf',
-      'kyazdani42/nvim-web-devicons' } 
+      'kyazdani42/nvim-web-devicons' }
   }
   use {
     "folke/twilight.nvim",
@@ -71,12 +77,17 @@ require('packer').startup(function(use)
 end)
 
 
+vim.cmd[[filetype plugin indent on]]
+
+opt.smartindent = true
 opt.splitbelow = true
 opt.splitright = true
 opt.swapfile = false
 opt.termguicolors = true
 opt.background = 'dark'
-opt.completeopt = {'menu', 'menuone', 'noselect'}
+opt.ignorecase = true
+--opt.completeopt = {'menu', 'menuone', 'noselect'}
+opt.completeopt = { 'menuone', 'noinsert', 'noselect' }
 opt.clipboard = 'unnamedplus'
 opt.mouse = 'a'
 opt.splitright = true
@@ -84,6 +95,7 @@ opt.splitbelow = true
 opt.expandtab = true
 opt.wrap = false
 opt.tabstop = 2
+opt.softtabstop = 2
 opt.shiftwidth = 2
 opt.hlsearch = false
 opt.number = true
@@ -101,6 +113,7 @@ opt.backup = false
 g.netrw_banner = false
 g.netrw_liststyle = 3
 g.markdown_fenced_languages = { 'javascript', 'js=javascript', 'json=javascript' }
+g.completion_matching_strategy_list = { 'exact', 'substring', 'fuzzy' }
 
 
 local function map(mode, lhs, rhs, opts)
@@ -281,6 +294,7 @@ local cmp = require('cmp')
       ['<C-e>'] = cmp.mapping.close(),
       ['<CR>'] = cmp.mapping.confirm({
         behavior = cmp.ConfirmBehavior.Insert,
+        select = true
       })
     },
     sources = {
@@ -289,8 +303,7 @@ local cmp = require('cmp')
     },
   }
 
-local au = require('au')
-
+--local au = require('au')
 
 require'nvim-tree'.setup {
   disable_netrw       = true,
@@ -354,7 +367,7 @@ vim.opt.listchars:append("eol:↴")
 
 require("indent_blankline").setup {
     show_end_of_line = true,
-    space_char_blankline = ".",
+    space_char_blankline = " ",
     buftype_exclude = {"terminal"}
 }
 
@@ -363,10 +376,9 @@ vim.cmd[[colorscheme everforest]]
 vim.api.nvim_set_keymap('v', 'f', '<Plug>SnipRun', {silent = true})
 
 --Everforest
-g.everforest_background = 'dark'
-g.everforest_enable_italic = 1
-g.everforest_disable_italic_comment = 0
-g.everforest_transparent_background = 1
+--g.everforest_enable_italic = 1
+--g.everforest_disable_italic_comment = 0
+--g.everforest_transparent_background = 0
 
 
 --From old init.vim
@@ -394,5 +406,45 @@ command! -bang -nargs=? -complete=dir Files
      \ call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
 
 let $FZF_DEFAULT_OPTS="--ansi --preview-window 'right:60%' --layout reverse --margin=1,4 --preview 'bat --color=always --style=header,grid --line-range :300 {}'"
-
 ]]
+
+
+ local sumneko_root_path =  '/home/sai/lua-language-server'
+ local sumneko_binary = '/home/sai/lua-language-server/bin/Linux/lua-language-server'
+ 
+ local runtime_path = vim.split(package.path, ';')
+ table.insert(runtime_path, "lua/?.lua")
+ table.insert(runtime_path, "lua/?/init.lua")
+ 
+ require'lspconfig'.sumneko_lua.setup {
+   cmd = {sumneko_binary, "-E", sumneko_root_path .. "/main.lua"};
+   settings = {
+     Lua = {
+       runtime = {
+         -- Tell the language server which version of Lua you're using (most likely LuaJIT in the case of Neovim)
+         version = 'LuaJIT',
+         -- Setup your lua path
+         path = runtime_path,
+       },
+       diagnostics = {
+         -- Get the language server to recognize the `vim` global
+         globals = {'vim'},
+       },
+       workspace = {
+         -- Make the server aware of Neovim runtime files
+         library = vim.api.nvim_get_runtime_file("", true),
+       },
+       -- Do not send telemetry data containing a randomized but unique identifier
+       telemetry = {
+         enable = false,
+       },
+     },
+   },
+ }
+
+ require('lualine').setup({
+   options = { 
+     icons_enabled = true,
+     theme = 'seoul256'
+   }
+ })
