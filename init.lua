@@ -7,26 +7,26 @@ g.mapleader = " "
 
 vim.cmd [[packadd packer.nvim]]
 require('packer').startup(function(use)
-  use 'nvim-telescope/telescope-fzy-native.nvim'
+  use 'ms-jpq/coq_nvim'
+
+  use { 'ms-jpq/coq_nvim', branch = 'coq' }
+  use { 'ms-jpq/coq.artifacts', branch = 'artifacts' }
+  use { 'ms-jpq/coq.thirdparty', branch = '3p' }
   use {
-    'hoob3rt/lualine.nvim',
+    'shadmansaleh/lualine.nvim',
     requires = {'kyazdani42/nvim-web-devicons', opt = true}
   }
+  use {'stevearc/gkeep.nvim', run = ':UpdateRemotePlugins'}
+  use 'nvim-telescope/telescope-fzy-native.nvim'
   use 'ggandor/lightspeed.nvim'
   use 'tjdevries/nlua.nvim'
   use 'shaunsingh/moonlight.nvim'
   use 'sainnhe/everforest'
+  use { 'prettier/vim-prettier' }
   use { 'michaelb/sniprun', run = 'bash ./install.sh'}
-  use "lukas-reineke/indent-blankline.nvim"
-  use { 'junegunn/fzf', run = './install --bin', }
-  use { 'junegunn/fzf.vim' }
+  --use "lukas-reineke/indent-blankline.nvim"
 	use 'wbthomason/packer.nvim'
 	use 'tpope/vim-surround'
-  use { 'ibhagwan/fzf-lua',
-    requires = {
-      'vijaymarupudi/nvim-fzf',
-      'kyazdani42/nvim-web-devicons' }
-  }
   use {
     "folke/twilight.nvim",
     config = function()
@@ -41,15 +41,15 @@ require('packer').startup(function(use)
 	use 'sbdchd/neoformat'
 	use 'neovim/nvim-lspconfig'
   use 'preservim/nerdcommenter'
-	use 'hrsh7th/nvim-cmp'
-	use 'hrsh7th/cmp-buffer'
   use {
       'kyazdani42/nvim-tree.lua',
       requires = 'kyazdani42/nvim-web-devicons',
       config = function() require'nvim-tree'.setup {} end
   }
-	use 'hrsh7th/cmp-nvim-lua'
-	use 'hrsh7th/cmp-nvim-lsp'
+	--use 'hrsh7th/nvim-cmp'
+	--use 'hrsh7th/cmp-buffer'
+	--use 'hrsh7th/cmp-nvim-lua'
+	--use 'hrsh7th/cmp-nvim-lsp'
 	use 'vimwiki/vimwiki'
 	use { 'nvim-treesitter/nvim-treesitter', branch = '0.5-compat', run = ':TSUpdate' }
 	use 'nvim-telescope/telescope.nvim'
@@ -67,7 +67,26 @@ require('packer').startup(function(use)
 	use 'ryanoasis/vim-devicons'
 	use 'TimUntersberger/neogit'
 	use 'projekt0n/github-nvim-theme'
-	use 'vhyrro/neorg'
+  use {
+      "nvim-neorg/neorg",
+      config = function()
+          require('neorg').setup {
+              -- Tell Neorg what modules to load
+              load = {
+                  ["core.defaults"] = {}, -- Load all the default modules
+                  ["core.norg.concealer"] = {}, -- Allows for use of icons
+                  ["core.norg.dirman"] = { -- Manage your directories with Neorg
+                      config = {
+                          workspaces = {
+                              my_workspace = "~/neorg"
+                          }
+                      }
+                  }
+              },
+          }
+      end,
+      requires = "nvim-lua/plenary.nvim"
+  }
 	use 'folke/zen-mode.nvim'
 	use 'nvim-treesitter/playground'
 	use 'David-Kunz/treesitter-unit'
@@ -131,9 +150,6 @@ g.neoterm_default_mod = 'vertical'
 g.neoterm_autoinsert = true
 g.neoterm_autoscroll = true
 g.neoterm_term_per_tab = true
-map('n', '<c-y>', ':Ttoggle<CR>')
-map('i', '<c-y>', '<Esc>:Ttoggle<CR>')
-map('t', '<c-y>', '<c-\\><c-n>:Ttoggle<CR>')
 map('n', '<leader>x', ':TREPLSendLine<CR>')
 map('v', '<leader>x', ':TREPLSendSelection<CR>')
 cmd([[
@@ -178,7 +194,9 @@ require('telescope').setup {
     }
 }
 require('telescope').load_extension('fzy_native')
+require('telescope').load_extension('gkeep')
 
+map('n', '<leader>tr', ':Telescope lsp_references<CR>')
 map('n', '<leader>fD', ':lua telescope_live_grep_in_path()<CR>')
 map('n', '<leader>fc', ':Telescope colorscheme<CR>')
 map('n', '<leader><space>', ':lua telescope_files_or_git_files()<CR>')
@@ -194,7 +212,7 @@ map('n', '<leader>FF', ':Telescope grep_string<CR>')
 
 --map('n', '<leader>ff', ':Files<CR>')
 map('n', '<leader>ff', ':Telescope find_files<CR>')
-map('n', '<leader>rr', ':Telescope live_grep_fzf<CR>')
+map('n', '<leader>rr', ':Telescope live_grep<CR>')
 
 -- Lsp
 local nvim_lsp = require'lspconfig'
@@ -245,17 +263,28 @@ local function organize_imports()
   vim.lsp.buf.execute_command(params)
 end
 
-nvim_lsp.tsserver.setup {
+local coq = require "coq"
+
+--nvim_lsp.tsserver.setup {
+  --on_attach = on_attach,
+  --capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities()),
+  --commands = {
+    --OrganizeImports = {
+      --organize_imports,
+      --description = "Organize Imports"
+    --}
+  --}
+--}
+
+nvim_lsp.tsserver.setup(coq.lsp_ensure_capabilities({
   on_attach = on_attach,
-  --capabilities = capabilities,
   commands = {
     OrganizeImports = {
       organize_imports,
       description = "Organize Imports"
     }
   }
-}
-
+}))
 
 
 cmd('set foldmethod=expr')
@@ -317,23 +346,23 @@ map('n', '<leader>gp', ':Git push<cr>')
 map('n', '<leader>eo',':NvimTreeToggle<CR>')
 
 -- hrsh7th/nvim-cmp
-local cmp = require('cmp')
-  cmp.setup {
-    mapping = {
-      ['<C-p>'] = cmp.mapping.select_prev_item(),
-      ['<C-n>'] = cmp.mapping.select_next_item(),
-      ['<C-Space>'] = cmp.mapping.complete(),
-      ['<C-e>'] = cmp.mapping.close(),
-      ['<CR>'] = cmp.mapping.confirm({
-        behavior = cmp.ConfirmBehavior.Insert,
-        select = true
-      })
-    },
-    sources = {
-      { name = 'nvim_lsp' },
-      { name = 'buffer' },
-    },
-  }
+--local cmp = require('cmp')
+  --cmp.setup {
+    --mapping = {
+      --['<C-p>'] = cmp.mapping.select_prev_item(),
+      --['<C-n>'] = cmp.mapping.select_next_item(),
+      --['<C-Space>'] = cmp.mapping.complete(),
+      --['<C-e>'] = cmp.mapping.close(),
+      --['<CR>'] = cmp.mapping.confirm({
+        --behavior = cmp.ConfirmBehavior.Insert,
+        --select = true
+      --})
+    --},
+    --sources = {
+      --{ name = 'nvim_lsp' },
+      --{ name = 'buffer' },
+    --},
+  --}
 
 require'nvim-tree'.setup {
   disable_netrw       = true,
@@ -388,15 +417,15 @@ require'sniprun'.setup({
   borders = 'single'               --# display borders around floating windows
 })
 
-vim.opt.list = true
-vim.opt.listchars:append("space:⋅")
-vim.opt.listchars:append("eol:↴")
+--vim.opt.list = true
+--vim.opt.listchars:append("space:⋅")
+--vim.opt.listchars:append("eol:↴")
 
-require("indent_blankline").setup {
-    show_end_of_line = true,
-    space_char_blankline = " ",
-    buftype_exclude = {"terminal"}
-}
+--require("indent_blankline").setup {
+    --show_end_of_line = true,
+    --space_char_blankline = " ",
+    --buftype_exclude = {"terminal"}
+--}
 
 vim.cmd[[colorscheme everforest]]
 
@@ -420,15 +449,6 @@ map('n', 'J', 'mzJ`z')
 
 map('n', 'Y', 'y$')
 map('n', '<leader>to', ':Rg TODO:<CR>')
-
-vim.cmd[[
-let $FZF_DEFAULT_COMMAND = 'rg --files --ignore-case --hidden -g "!{.git,node_modules,vendor,build}/*"'
-command! -bang -nargs=? -complete=dir Files
-     \ call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
-
-let $FZF_DEFAULT_OPTS="--ansi --preview-window 'right:60%' --layout reverse --margin=1,4 --preview 'bat --color=always --style=header,grid --line-range :300 {}'"
-]]
-
 
  local sumneko_root_path =  '/home/sai/lua-language-server'
  local sumneko_binary = '/home/sai/lua-language-server/bin/Linux/lua-language-server'
@@ -459,9 +479,19 @@ let $FZF_DEFAULT_OPTS="--ansi --preview-window 'right:60%' --layout reverse --ma
  }
 
  require('lualine').setup({
-   options = { 
+   options = {
      icons_enabled = true,
      theme = 'everforest'
    }
  })
  vim.cmd[[set background=dark]]
+
+local parser_configs = require('nvim-treesitter.parsers').get_parser_configs()
+
+parser_configs.norg = {
+    install_info = {
+        url = "https://github.com/nvim-neorg/tree-sitter-norg",
+        files = { "src/parser.c", "src/scanner.cc" },
+        branch = "main"
+    },
+}
