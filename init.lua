@@ -7,8 +7,7 @@ g.mapleader = " "
 
 vim.cmd [[packadd packer.nvim]]
 require('packer').startup(function(use)
-  use 'ms-jpq/coq_nvim'
-
+  --use 'ms-jpq/coq_nvim'
   use { 'ms-jpq/coq_nvim', branch = 'coq' }
   use { 'ms-jpq/coq.artifacts', branch = 'artifacts' }
   use { 'ms-jpq/coq.thirdparty', branch = '3p' }
@@ -24,7 +23,7 @@ require('packer').startup(function(use)
   use 'sainnhe/everforest'
   use { 'prettier/vim-prettier' }
   use { 'michaelb/sniprun', run = 'bash ./install.sh'}
-  --use "lukas-reineke/indent-blankline.nvim"
+  use "lukas-reineke/indent-blankline.nvim"
 	use 'wbthomason/packer.nvim'
 	use 'tpope/vim-surround'
   use {
@@ -99,6 +98,7 @@ end)
 
 vim.cmd[[filetype plugin indent on]]
 
+opt.cursorline = true
 opt.smartindent = true
 opt.splitbelow = true
 opt.splitright = true
@@ -264,7 +264,7 @@ local function organize_imports()
 end
 
 local coq = require "coq"
-
+vim.cmd[[ let g:coq_settings = { 'auto_start': v:true } ]]
 --nvim_lsp.tsserver.setup {
   --on_attach = on_attach,
   --capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities()),
@@ -417,15 +417,15 @@ require'sniprun'.setup({
   borders = 'single'               --# display borders around floating windows
 })
 
---vim.opt.list = true
---vim.opt.listchars:append("space:⋅")
---vim.opt.listchars:append("eol:↴")
+vim.opt.list = true
+vim.opt.listchars:append("space:⋅")
+vim.opt.listchars:append("eol:↴")
 
---require("indent_blankline").setup {
-    --show_end_of_line = true,
-    --space_char_blankline = " ",
-    --buftype_exclude = {"terminal"}
---}
+require("indent_blankline").setup {
+    show_end_of_line = true,
+    space_char_blankline = " ",
+    buftype_exclude = {"terminal"}
+}
 
 vim.cmd[[colorscheme everforest]]
 
@@ -495,3 +495,5 @@ parser_configs.norg = {
         branch = "main"
     },
 }
+
+vim.cmd[[ inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>" ]]
